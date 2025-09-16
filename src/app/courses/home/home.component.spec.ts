@@ -24,16 +24,28 @@ describe("HomeComponent", () => {
   let fixture: ComponentFixture<HomeComponent>;
   let component: HomeComponent;
   let el: DebugElement;
+  let coursesService: CoursesService;
 
   beforeEach(waitForAsync(() => {
+    const coursesServiceSpy = jasmine.createSpyObj("CoursesService", [
+      "findAllCourses",
+    ]);
+
     TestBed.configureTestingModule({
       imports: [CoursesModule, NoopAnimationsModule],
+      providers: [
+        {
+          provide: CoursesService,
+          useValue: coursesServiceSpy,
+        },
+      ],
     })
       .compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(HomeComponent);
         component = fixture.componentInstance;
         el = fixture.debugElement;
+        coursesService = TestBed.inject(CoursesService);
       });
   }));
 
@@ -42,7 +54,9 @@ describe("HomeComponent", () => {
   });
 
   it("should display only beginner courses", () => {
-    pending();
+    coursesService.findAllCourses().subscribe((value) => {
+      setupCourses();
+    });
   });
 
   it("should display only advanced courses", () => {
